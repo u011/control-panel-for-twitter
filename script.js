@@ -3818,15 +3818,88 @@ const configureCss = (() => {
       )
     }
     if (config.hideMedia) {
-      hideCssSelectors.push(
-        // Photos in tweets
-        '[data-testid="tweetPhoto"]',
-        // Videos in tweets
-        '[data-testid="videoPlayer"]',
-        '[data-testid="videoComponent"]',
-        // Card wrappers (link previews with images)
-        '[data-testid="card.wrapper"]',
-      )
+      cssRules.push(`
+        /* Media spoiler - blur images only */
+        [data-testid="tweetPhoto"] img,
+        [data-testid="tweetPhoto"] div[style*="background-image"] {
+          filter: blur(40px) !important;
+          transition: filter 0.3s ease !important;
+        }
+        [data-testid="tweetPhoto"]:hover img,
+        [data-testid="tweetPhoto"]:hover div[style*="background-image"] {
+          filter: blur(0) !important;
+        }
+        /* Media spoiler - blur with dark overlay for videos and cards */
+        [data-testid="videoPlayer"],
+        [data-testid="videoComponent"],
+        [data-testid="card.wrapper"],
+        a[href$="/header_photo"] {
+          position: relative !important;
+          filter: blur(30px) brightness(0.5) !important;
+          transition: filter 0.3s ease !important;
+        }
+        [data-testid="videoPlayer"]::before,
+        [data-testid="videoComponent"]::before,
+        [data-testid="card.wrapper"]::before,
+        a[href$="/header_photo"]::before {
+          content: "";
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          background: var(--background-color, #000000) !important;
+          opacity: 0.7 !important;
+          z-index: 1 !important;
+          pointer-events: none !important;
+        }
+        [data-testid="videoPlayer"]:hover,
+        [data-testid="videoComponent"]:hover,
+        [data-testid="card.wrapper"]:hover,
+        a[href$="/header_photo"]:hover {
+          filter: blur(0) brightness(1) !important;
+        }
+        [data-testid="videoPlayer"]:hover::before,
+        [data-testid="videoComponent"]:hover::before,
+        [data-testid="card.wrapper"]:hover::before,
+        a[href$="/header_photo"]:hover::before {
+          opacity: 0 !important;
+        }
+        /* Disable video autoplay */
+        [data-testid="videoPlayer"] video,
+        [data-testid="videoComponent"] video {
+          pointer-events: auto !important;
+        }
+      `)
+
+      // Disable video autoplay with JavaScript
+      let mediaObserver = new MutationObserver((mutations) => {
+        for (let mutation of mutations) {
+          for (let node of mutation.addedNodes) {
+            if (node.nodeType === 1) {
+              let videos = node.querySelectorAll?.('[data-testid="videoPlayer"] video, [data-testid="videoComponent"] video') || []
+              videos.forEach(video => {
+                video.pause()
+                video.autoplay = false
+                video.removeAttribute('autoplay')
+              })
+              if (node.matches?.('[data-testid="videoPlayer"] video, [data-testid="videoComponent"] video')) {
+                node.pause()
+                node.autoplay = false
+                node.removeAttribute('autoplay')
+              }
+            }
+          }
+        }
+      })
+      mediaObserver.observe(document.body, { childList: true, subtree: true })
+
+      // Pause existing videos
+      document.querySelectorAll('[data-testid="videoPlayer"] video, [data-testid="videoComponent"] video').forEach(video => {
+        video.pause()
+        video.autoplay = false
+        video.removeAttribute('autoplay')
+      })
     }
     if (!config.hideExplorePageContents) {
       hideCssSelectors.push(
