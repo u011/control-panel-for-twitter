@@ -146,7 +146,7 @@ const config = {
   // Mobile only
   hideLiveBroadcastBar: false,
   hideMessagesBottomNavItem: false,
-  preventNextVideoAutoplay: true,
+   preventNextVideoAutoplay: true,
 }
 //#endregion
 
@@ -3809,7 +3809,7 @@ const configureCss = (() => {
         }
       `)
 
-      // Disable video autoplay with JavaScript
+      // Disable video autoplay with JavaScript - prevent all autoplay including hover
       let mediaObserver = new MutationObserver((mutations) => {
         for (let mutation of mutations) {
           for (let node of mutation.addedNodes) {
@@ -3819,11 +3819,28 @@ const configureCss = (() => {
                 video.pause()
                 video.autoplay = false
                 video.removeAttribute('autoplay')
+                // Override play method to prevent autoplay
+                const originalPlay = video.play
+                video.play = function() {
+                  // Only allow play if explicitly allowed
+                  if (video._allowPlay) {
+                    return originalPlay.call(this)
+                  }
+                  // Block autoplay
+                  return Promise.resolve()
+                }
               })
               if (node.matches?.('[data-testid="videoPlayer"] video, [data-testid="videoComponent"] video')) {
                 node.pause()
                 node.autoplay = false
                 node.removeAttribute('autoplay')
+                const originalPlay = node.play
+                node.play = function() {
+                  if (node._allowPlay) {
+                    return originalPlay.call(this)
+                  }
+                  return Promise.resolve()
+                }
               }
             }
           }
@@ -3831,11 +3848,33 @@ const configureCss = (() => {
       })
       mediaObserver.observe(document.body, { childList: true, subtree: true })
 
-      // Pause existing videos
+      // Pause existing videos and prevent autoplay
       document.querySelectorAll('[data-testid="videoPlayer"] video, [data-testid="videoComponent"] video').forEach(video => {
         video.pause()
         video.autoplay = false
         video.removeAttribute('autoplay')
+        // Override play method
+        const originalPlay = video.play
+        video.play = function() {
+          if (video._allowPlay) {
+            return originalPlay.call(this)
+          }
+          return Promise.resolve()
+        }
+      })
+
+      // Allow user clicks to play videos
+      document.addEventListener('click', (event) => {
+        const videoContainer = event.target.closest('[data-testid="videoPlayer"], [data-testid="videoComponent"]')
+        if (videoContainer) {
+          const video = videoContainer.querySelector('video')
+          if (video && video.paused) {
+            video._allowPlay = true
+            video.play().finally(() => {
+              video._allowPlay = false
+            })
+          }
+        }
       })
     }
     if (!config.hideExplorePageContents) {
