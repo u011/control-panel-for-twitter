@@ -97,6 +97,16 @@ Two manifest files with different APIs:
 - Safari: `navigator.userAgent.includes('Safari/') && !/Chrom(e|ium)\//.test(navigator.userAgent)`
 - Different logo handling for Safari (MutationObserver) vs others (CSS injection)
 
+## Working with Twitter Media
+
+**See TWITTER_MEDIA_GUIDE.md** for detailed guide on finding and manipulating Twitter media elements (images, videos, cards, banners).
+
+Key points:
+- Use `data-testid` attributes to target elements (e.g., `tweetPhoto`, `videoPlayer`)
+- Apply filters to **child elements** (img, background-image divs), not containers
+- Link wrappers block interaction - target children and use parent `:hover` state
+- Test selectors in saved HTML files: `rg 'data-testid="tweetPhoto"' examples/*.html`
+
 ## Key Technical Details
 
 ### Logo/Branding Replacement

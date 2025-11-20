@@ -3819,15 +3819,15 @@ const configureCss = (() => {
     }
     if (config.hideMedia) {
       cssRules.push(`
-        /* Media spoiler - blur images only */
+        /* Media spoiler - super dark blur for images */
         [data-testid="tweetPhoto"] img,
         [data-testid="tweetPhoto"] div[style*="background-image"] {
-          filter: blur(40px) !important;
+          filter: blur(50px) brightness(0.2) contrast(0.5) !important;
           transition: filter 0.3s ease !important;
         }
         [data-testid="tweetPhoto"]:hover img,
         [data-testid="tweetPhoto"]:hover div[style*="background-image"] {
-          filter: blur(0) !important;
+          filter: blur(0) brightness(1) contrast(1) !important;
         }
         /* Media spoiler - blur with dark overlay for videos and cards */
         [data-testid="videoPlayer"],
