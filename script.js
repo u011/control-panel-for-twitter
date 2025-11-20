@@ -46,6 +46,9 @@ const config = {
   enabled: true,
   debug: false,
   debugLogTimelineStats: false,
+  // Fork
+  hideAvatars: true,
+  hideMedia: true,
   // Shared
   addAddMutedWordMenuItem: true,
   addFocusedTweetAccountLocation: false,
@@ -3805,6 +3808,27 @@ const configureCss = (() => {
           '[data-testid="tweet"][tabindex="-1"] [role="group"][id^="id__"] > div:has(> button[data-testid$="ookmark"])',
         )
       }
+    }
+    if (config.hideAvatars) {
+      hideCssSelectors.push(
+        // User avatars in tweets and profiles
+        '[data-testid^="UserAvatar-Container"]',
+        // Profile header avatar
+        'a[href$="/photo"] img[src*="profile_images"]',
+      )
+    }
+    if (config.hideMedia) {
+      hideCssSelectors.push(
+        // Photos in tweets
+        '[data-testid="tweetPhoto"]',
+        // Videos in tweets
+        '[data-testid="videoPlayer"]',
+        // Card wrappers (link previews with images)
+        '[data-testid="card.wrapper"]',
+        // GIF and other media containers
+        '[data-testid="card.layoutLarge.media"]',
+        '[data-testid="card.layoutSmall.media"]',
+      )
     }
     if (!config.hideExplorePageContents) {
       hideCssSelectors.push(

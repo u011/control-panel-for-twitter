@@ -3,6 +3,9 @@ export type Config = {
   debug: boolean
   debugLogTimelineStats: boolean
   version?: 'desktop' | 'mobile'
+  // Fork
+  hideAvatars: boolean
+  hideMedia: boolean
   // Shared
   addAddMutedWordMenuItem: boolean
   addFocusedTweetAccountLocation: boolean
