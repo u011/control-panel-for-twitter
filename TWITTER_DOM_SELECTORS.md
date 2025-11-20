@@ -23,6 +23,8 @@ Avatars are typically `<img>` elements with:
 }
 ```
 
+**Note**: Hiding avatar containers will prevent hover profile cards from appearing. This is expected behavior when hiding avatars.
+
 ## Media Content
 
 ### Photos
