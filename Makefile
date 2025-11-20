@@ -12,28 +12,28 @@ help: ## Show this help message
 
 build: ## Build both MV2 and MV3 versions
 	@echo "🔨 Building Control Panel for Twitter extension..."
-	npm run build
+	@npm run build > /dev/null
 
 build-mv2: ## Build Manifest V2 version only
 	@echo "🔨 Building Manifest V2 version..."
-	npm run build-mv2
+	@npm run build-mv2 > /dev/null
 
 build-mv3: ## Build Manifest V3 version only
 	@echo "🔨 Building Manifest V3 version..."
-	npm run build-mv3
+	@npm run build-mv3 > /dev/null
 
 install: build deploy ## Build and deploy the extension
 
 deploy: ## Deploy to $(TARGET_DIR)
 	@echo "🚀 Deploying extension..."
-	./deploy.sh
+	@./deploy.sh > /dev/null
 
 clean: ## Clean build artifacts
 	@echo "🧹 Cleaning build artifacts..."
-	rm -rf web-ext-artifacts
-	rm -rf unpacked
-	rm -f manifest.json
-	rm -f browser_action.html
+	@rm -rf web-ext-artifacts
+	@rm -rf unpacked
+	@rm -f manifest.json
+	@rm -f browser_action.html
 	@echo "✨ Clean complete!"
 
 all: clean build deploy ## Clean, build, and deploy everything
