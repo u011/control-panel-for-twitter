@@ -3819,15 +3819,16 @@ const configureCss = (() => {
     }
     if (config.hideMedia) {
       cssRules.push(`
-        /* Media spoiler - super dark blur for images */
+        /* Media spoiler - extreme blur only for images */
         [data-testid="tweetPhoto"] img,
         [data-testid="tweetPhoto"] div[style*="background-image"] {
-          filter: blur(50px) brightness(0.2) contrast(0.5) !important;
+          filter: blur(80px) brightness(0.15) saturate(0) !important;
           transition: filter 0.3s ease !important;
         }
-        [data-testid="tweetPhoto"]:hover img,
-        [data-testid="tweetPhoto"]:hover div[style*="background-image"] {
-          filter: blur(0) brightness(1) contrast(1) !important;
+        /* Remove blur on hover - target parent link */
+        a[role="link"]:hover [data-testid="tweetPhoto"] img,
+        a[role="link"]:hover [data-testid="tweetPhoto"] div[style*="background-image"] {
+          filter: blur(0) brightness(1) saturate(1) !important;
         }
         /* Media spoiler - blur with dark overlay for videos and cards */
         [data-testid="videoPlayer"],
