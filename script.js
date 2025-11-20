@@ -3811,10 +3811,10 @@ const configureCss = (() => {
     }
     if (config.hideAvatars) {
       hideCssSelectors.push(
-        // User avatars in tweets and profiles
-        '[data-testid^="UserAvatar-Container"]',
-        // Profile header avatar
-        'a[href$="/photo"] img[src*="profile_images"]',
+        // User avatars in tweets
+        '[data-testid="Tweet-User-Avatar"]',
+        // User avatar containers (includes username)
+        '[data-testid^="UserAvatar-Container-"]',
       )
     }
     if (config.hideMedia) {
@@ -3823,11 +3823,9 @@ const configureCss = (() => {
         '[data-testid="tweetPhoto"]',
         // Videos in tweets
         '[data-testid="videoPlayer"]',
+        '[data-testid="videoComponent"]',
         // Card wrappers (link previews with images)
         '[data-testid="card.wrapper"]',
-        // GIF and other media containers
-        '[data-testid="card.layoutLarge.media"]',
-        '[data-testid="card.layoutSmall.media"]',
       )
     }
     if (!config.hideExplorePageContents) {
