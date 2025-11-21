@@ -1,4 +1,4 @@
-.PHONY: all build build-mv2 build-mv3 install deploy clean help
+.PHONY: all build build-mv2 build-mv3 install deploy clean help dev
 
 EXTENSION_NAME := control-panel-for-twitter
 EXTENSIONS_DIR := /Volumes/Shared/boot/extensions

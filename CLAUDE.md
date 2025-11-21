@@ -68,8 +68,10 @@ The extension uses a standard three-layer browser extension architecture:
 - Config defined in `types.d.ts` as TypeScript interface with 100+ boolean/enum options
 - Default config in `script.js` (lines 40-146)
 - Stored in `chrome.storage.local`
-- Changes flow: options page → storage → content.js → script.js (via message passing)
+- Changes flow: options page → storage → background.js (broadcasts) → content.js → script.js
 - Fast checks use `localStorage.cpftEnabled` and `localStorage.cpftReplaceLogo`
+
+**Firefox-specific:** Config updates use message passing from background to content scripts because Firefox's `storage.onChanged` doesn't reliably fire in content scripts (especially inactive tabs). Background script broadcasts changes using `browser.tabs.sendMessage()` to all tabs.
 
 ### Manifest Versions
 Two manifest files with different APIs:
@@ -96,6 +98,7 @@ Two manifest files with different APIs:
 ### Browser Detection
 - Safari: `navigator.userAgent.includes('Safari/') && !/Chrom(e|ium)\//.test(navigator.userAgent)`
 - Different logo handling for Safari (MutationObserver) vs others (CSS injection)
+- Firefox: Uses `browser` API namespace instead of `chrome` (background.js handles this automatically)
 
 ## Working with Twitter Media
 

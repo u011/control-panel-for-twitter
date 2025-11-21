@@ -17,8 +17,7 @@
     "scripts": [
       "background.js"
     ],
-    "persistent": false,
-    "type": "module"
+    "persistent": false
   },
   "content_scripts": [
     {
