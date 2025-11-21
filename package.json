@@ -2,8 +2,9 @@
   "scripts": {
     "create-browser-action": "node ./scripts/create-browser-action.js",
     "create-store-description": "node ./scripts/create-store-description.mjs",
+    "inject-config": "node ./scripts/inject-config.js",
     "release": "node ./scripts/release.js",
-    "prebuild": "npm run create-browser-action",
+    "prebuild": "npm run inject-config && npm run create-browser-action",
     "build": "node ./scripts/build.js",
     "build-mv2": "node ./scripts/build.js 2",
     "build-mv3": "node ./scripts/build.js 3",
