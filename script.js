@@ -49,6 +49,9 @@ const config = {
   // Fork
   hideAvatars: true,
   hideMedia: true,
+  hideEmojis: true,
+  grayLinks: true,
+  hashtagCheckmarks: true,
   // Shared
   addAddMutedWordMenuItem: true,
   addFocusedTweetAccountLocation: false,
@@ -3901,6 +3904,42 @@ const configureCss = (() => {
         video.autoplay = false
         video.removeAttribute('autoplay')
       })
+    }
+    if (config.hideEmojis) {
+      hideCssSelectors.push(
+        'img[src*="/emoji/"]',
+        'img[draggable="false"][src*=".svg"]',
+      )
+    }
+    if (config.grayLinks) {
+      cssRules.push(`
+        /* Gray links instead of blue */
+        a[role="link"] {
+          color: #999999 !important;
+        }
+        a[role="link"]:hover {
+          color: #bbbbbb !important;
+        }
+        /* Gray hashtags */
+        a[href*="/hashtag/"] {
+          color: #999999 !important;
+        }
+      `)
+    }
+    if (config.hashtagCheckmarks) {
+      cssRules.push(`
+        /* Replace blue checkmark with # sign */
+        .cpft_blue_check {
+          display: none !important;
+        }
+        .cpft_blue_check::after {
+          content: "#";
+          color: #999999;
+          font-size: 16px;
+          font-weight: bold;
+          display: inline-block !important;
+        }
+      `)
     }
     if (!config.hideExplorePageContents) {
       hideCssSelectors.push(

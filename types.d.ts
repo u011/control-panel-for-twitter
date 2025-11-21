@@ -6,6 +6,9 @@ export type Config = {
   // Fork
   hideAvatars: boolean
   hideMedia: boolean
+  hideEmojis: boolean
+  grayLinks: boolean
+  hashtagCheckmarks: boolean
   // Shared
   addAddMutedWordMenuItem: boolean
   addFocusedTweetAccountLocation: boolean
