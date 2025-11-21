@@ -1,6 +1,4 @@
-console.log('OPTIONS.JS LOADING...')
 document.title = chrome.i18n.getMessage(`extensionName`)
-console.log('Title set')
 
 for (let optionValue of [
   '1000',
@@ -341,25 +339,14 @@ function exportConfig() {
   console.log('Export completed')
 }
 
-function handleImportFile(e) {
-  console.log('handleImportFile called', e)
-  alert('handleImportFile called!')
+async function handleImportFile(e) {
   let file = e.target.files[0]
-  console.log('File selected:', file)
-  if (!file) {
-    console.log('No file selected')
-    alert('No file selected')
-    return
-  }
+  if (!file) return
 
-  alert('File selected: ' + file.name)
   let reader = new FileReader()
-  reader.onload = (e) => {
-    console.log('File loaded')
-    alert('File loaded, parsing...')
+  reader.onload = async (e) => {
     try {
       let importedConfig = JSON.parse(e.target.result)
-      console.log('Parsed config:', importedConfig)
       // Basic validation - check if it has some expected properties
       if (typeof importedConfig !== 'object' || !importedConfig.hasOwnProperty('enabled')) {
         throw new Error('Invalid configuration file')
@@ -367,22 +354,18 @@ function handleImportFile(e) {
 
       // Merge with default config to ensure all properties exist
       let newConfig = {...defaultConfig, ...importedConfig}
-      console.log('Merged config:', newConfig)
 
-      // Store the imported config
+      // Store the imported config - use callback for better Firefox compatibility
       chrome.storage.local.set(newConfig, () => {
         if (chrome.runtime.lastError) {
-          console.error('Storage error:', chrome.runtime.lastError)
           alert('Error importing configuration: ' + chrome.runtime.lastError.message)
         } else {
-          console.log('Config saved successfully')
           alert('Configuration imported successfully!')
-          // Reload the page to apply changes
-          location.reload()
+          // Give broadcast time to complete before reload
+          setTimeout(() => location.reload(), 500)
         }
       })
     } catch (error) {
-      console.error('Import error:', error)
       alert('Error parsing configuration file: ' + error.message)
     }
   }
@@ -644,9 +627,7 @@ function updateFormControl($control, value) {
 
 //#region Main
 function main() {
-  console.log('MAIN() FUNCTION CALLED')
   chrome.storage.local.get((/** @type {Partial<import("./types").Config>} */ storedConfig) => {
-    console.log('Storage loaded, config:', storedConfig)
     // Update deprecated config values
     // @ts-ignore
     if (storedConfig.twitterBlueChecks == 'dim') {
@@ -657,12 +638,8 @@ function main() {
     $body.classList.toggle('debug', optionsConfig.debug === true)
     $experiments.open = Boolean(optionsConfig.customCss)
     $exportConfig.addEventListener('click', exportConfig)
-    console.log('Import config file element:', $importConfigFile)
     if ($importConfigFile) {
       $importConfigFile.addEventListener('change', handleImportFile)
-      console.log('Import file change listener added')
-    } else {
-      console.error('Import config file input not found!')
     }
     $form.addEventListener('change', onFormChanged)
     $hideQuotesFromDetails.addEventListener('toggle', updateHideQuotesFromDisplay)
