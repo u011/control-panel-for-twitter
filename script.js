@@ -3924,20 +3924,25 @@ const configureCss = (() => {
         a[href*="/hashtag/"] {
           color: #999999 !important;
         }
+        /* Gray "Show more" button */
+        [data-testid="tweet-text-show-more-link"] {
+          color: #999999 !important;
+        }
       `)
     }
     if (config.hashtagCheckmarks) {
       cssRules.push(`
-        /* Replace blue checkmark with # sign */
-        .cpft_blue_check {
+        /* Hide blue checkmark SVG */
+        svg.cpft_blue_check {
           display: none !important;
         }
-        .cpft_blue_check::after {
-          content: "#";
+        /* Add # sign on parent element using :has() */
+        span:has(> svg.cpft_blue_check)::after,
+        div:has(> svg.cpft_blue_check)::after {
+          content: " #";
           color: #999999;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: bold;
-          display: inline-block !important;
         }
       `)
     }
