@@ -59,11 +59,13 @@ copy_extension_files "$TARGET_DIR/mv3-chromium" "manifest.mv3.json"
 
 # Create Chrome version (same as MV3)
 echo "🔄 Creating Chrome version..."
-cp -r "$TARGET_DIR/mv3-chromium" "$TARGET_DIR/chrome"
+rm -rf "$TARGET_DIR/chrome"
+copy_extension_files "$TARGET_DIR/chrome" "manifest.mv3.json"
 
 # Create Edge version (same as MV3)
 echo "🔄 Creating Edge version..."
-cp -r "$TARGET_DIR/mv3-chromium" "$TARGET_DIR/edge"
+rm -rf "$TARGET_DIR/edge"
+copy_extension_files "$TARGET_DIR/edge" "manifest.mv3.json"
 
 # Copy packed extension files if they exist
 if [ -d "$SOURCE_DIR/web-ext-artifacts" ]; then
