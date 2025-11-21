@@ -330,14 +330,40 @@ let $showBlueReplyFollowersCountLabel = /** @type {HTMLElement} */ (document.que
 function exportConfig() {
   console.log('Export config function called')
   console.log('Current config:', optionsConfig)
+
+  // Get version info from script.js config or manifest
+  let appVersion = optionsConfig._appVersion || '4.15.2'
+  let buildDate = optionsConfig._buildDate || new Date().toISOString().split('T')[0]
+
+  // Create export timestamp: YYMMDDHHNN format
+  let now = new Date()
+  let timestamp = [
+    String(now.getFullYear()).slice(-2).padStart(2, '0'),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+    String(now.getHours()).padStart(2, '0'),
+    String(now.getMinutes()).padStart(2, '0')
+  ].join('')
+
+  // Add version info to exported config
+  let exportConfig = {
+    ...optionsConfig,
+    _appVersion: appVersion,
+    _buildDate: buildDate,
+    _exportDate: now.toISOString().split('T')[0],
+    _exportTime: now.toTimeString().split(' ')[0]
+  }
+
+  let filename = `control-panel-for-twitter-v${appVersion}.config.${timestamp}.txt`
+
   let $a = document.createElement('a')
-  $a.download = 'control-panel-for-twitter-v4.16.0.config.txt'
+  $a.download = filename
   $a.href = URL.createObjectURL(new Blob([
-    JSON.stringify(optionsConfig, null, 2)
+    JSON.stringify(exportConfig, null, 2)
   ], {type: 'text/plain'}))
   $a.click()
   URL.revokeObjectURL($a.href)
-  console.log('Export completed')
+  console.log('Export completed:', filename)
 }
 
 async function handleImportFile(e) {

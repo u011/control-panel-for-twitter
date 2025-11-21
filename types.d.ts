@@ -114,6 +114,11 @@ export type Config = {
   hideLiveBroadcastBar: boolean
   hideMessagesBottomNavItem: boolean
   preventNextVideoAutoplay: boolean
+  // Build metadata (added during build/export)
+  _appVersion?: string
+  _buildDate?: string
+  _exportDate?: string
+  _exportTime?: string
 }
 
 export type Locale = {
