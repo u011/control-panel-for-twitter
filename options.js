@@ -313,6 +313,7 @@ let checkboxGroups
 // Page elements
 let $experiments = /** @type {HTMLDetailsElement} */ (document.querySelector('details#experiments'))
 let $exportConfig = document.querySelector('#export-config')
+let $importConfig = document.querySelector('#import-config')
 let $importConfigFile = document.querySelector('#import-config-file')
 let $form = document.querySelector('form')
 let $hideQuotesFrom =  /** @type {HTMLDivElement} */ (document.querySelector('#hideQuotesFrom'))
@@ -638,7 +639,8 @@ function main() {
     $body.classList.toggle('debug', optionsConfig.debug === true)
     $experiments.open = Boolean(optionsConfig.customCss)
     $exportConfig.addEventListener('click', exportConfig)
-    if ($importConfigFile) {
+    if ($importConfig && $importConfigFile) {
+      $importConfig.addEventListener('click', () => $importConfigFile.click())
       $importConfigFile.addEventListener('change', handleImportFile)
     }
     $form.addEventListener('change', onFormChanged)

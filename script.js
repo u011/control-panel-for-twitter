@@ -2686,6 +2686,48 @@ function observeBodyBackgroundColor() {
   })
 }
 
+function observeVerificationBadges() {
+  if (!config.hashtagCheckmarks) return
+
+  // Apply to existing badges
+  document.querySelectorAll(Selectors.VERIFIED_TICK).forEach($svg => {
+    if (!$svg.classList.contains('cpft_blue_check')) {
+      blueCheck($svg)
+    }
+  })
+
+  // Watch for new badges being added
+  let badgeObserver = new MutationObserver((mutations) => {
+    for (let mutation of mutations) {
+      for (let node of mutation.addedNodes) {
+        if (node.nodeType !== 1) continue
+        let $element = /** @type {Element} */ (node)
+
+        // Check if the added node itself is a verification badge
+        if ($element.matches && $element.matches(Selectors.VERIFIED_TICK)) {
+          if (!$element.classList.contains('cpft_blue_check')) {
+            blueCheck($element)
+          }
+        }
+
+        // Check for verification badges within the added node
+        if ($element.querySelectorAll) {
+          $element.querySelectorAll(Selectors.VERIFIED_TICK).forEach($svg => {
+            if (!$svg.classList.contains('cpft_blue_check')) {
+              blueCheck($svg)
+            }
+          })
+        }
+      }
+    }
+  })
+
+  badgeObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+  })
+}
+
 /**
  * @param {HTMLElement} $popup
  */
@@ -3913,28 +3955,54 @@ const configureCss = (() => {
     }
     if (config.grayLinks) {
       cssRules.push(`
-        /* Gray links instead of blue */
-        a[role="link"] {
+        /* Gray links instead of blue - target the link and all children */
+        a[role="link"],
+        a[role="link"] *,
+        a[role="link"] span,
+        a[role="link"] div {
           color: #999999 !important;
         }
-        a[role="link"]:hover {
+        a[role="link"]:hover,
+        a[role="link"]:hover *,
+        a[role="link"]:hover span,
+        a[role="link"]:hover div {
           color: #bbbbbb !important;
         }
         /* Gray hashtags */
-        a[href*="/hashtag/"] {
+        a[href*="/hashtag/"],
+        a[href*="/hashtag/"] * {
           color: #999999 !important;
         }
         /* Gray "Show more" button */
-        [data-testid="tweet-text-show-more-link"] {
+        [data-testid="tweet-text-show-more-link"],
+        [data-testid="tweet-text-show-more-link"] * {
           color: #999999 !important;
+        }
+        /* Gray username/handle in tweets */
+        [data-testid="User-Name"] a[role="link"],
+        [data-testid="User-Name"] a[role="link"] * {
+          color: #999999 !important;
+        }
+        /* Gray profile URL link */
+        [data-testid="UserUrl"] a,
+        [data-testid="UserUrl"] a *,
+        [data-testid="UserUrl"] span {
+          color: #999999 !important;
+        }
+        /* Gray/hide unread notification dots */
+        [aria-label*="unread"] {
+          opacity: 0 !important;
         }
       `)
     }
     if (config.hashtagCheckmarks) {
       cssRules.push(`
-        /* Hide blue checkmark SVG */
+        /* Hide blue checkmark SVG and its aria-label */
         svg.cpft_blue_check {
           display: none !important;
+        }
+        svg.cpft_blue_check[aria-label] {
+          font-size: 0 !important;
         }
         /* Add # sign on parent element using :has() */
         span:has(> svg.cpft_blue_check)::after,
@@ -5840,12 +5908,15 @@ function onIndividualTweetTimelineChange($timeline, options) {
         hideItem = true
       }
 
-      if (!hideItem && (config.twitterBlueChecks != 'ignore' || config.hideTwitterBlueReplies)) {
+      if (!hideItem && (config.twitterBlueChecks != 'ignore' || config.hideTwitterBlueReplies || config.hashtagCheckmarks)) {
         for (let $svg of $tweet.querySelectorAll(Selectors.VERIFIED_TICK)) {
           let verifiedType = getVerifiedType($svg)
           if (!verifiedType) continue
 
-          if (config.twitterBlueChecks != 'ignore' && verifiedType == 'BLUE') {
+          // Apply cpft_blue_check class for all badge types when hashtagCheckmarks is enabled
+          if (config.hashtagCheckmarks) {
+            blueCheck($svg)
+          } else if (config.twitterBlueChecks != 'ignore' && verifiedType == 'BLUE') {
             blueCheck($svg)
           }
 
@@ -7402,6 +7473,7 @@ async function main() {
       checkReactNativeStylesheet()
       observeBodyBackgroundColor()
       observeReRenderBoundary()
+      observeVerificationBadges()
       patchHistory()
       let initialThemeColor = getThemeColorFromState()
       if (initialThemeColor) {
