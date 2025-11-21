@@ -19,6 +19,22 @@
       </label>
     </section>
     <section class="group labelled">
+      <label>Configuration</label>
+      <section>
+        <label class="button">
+          <span>Export configuration</span>
+          <input type="button" value="Export" id="export-config">
+        </label>
+      </section>
+      <section>
+        <label class="button" for="import-config-file">
+          <span>Import configuration</span>
+          <input type="file" id="import-config-file" accept=".txt,.json" style="display: none;">
+          <input type="button" value="Import" id="import-config-trigger">
+        </label>
+      </section>
+    </section>
+    <section class="group labelled">
       <label id="forkOptionsLabel">
         Fork
       </label>
