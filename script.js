@@ -102,7 +102,7 @@ const config = {
   mutedQuotes: [],
   quoteTweets: 'separate',
   redirectChatNav: false,
-  redirectToTwitter: false,
+  redirectToTwitter: true,
   reducedInteractionMode: false,
   replaceLogo: false,
   restoreLinkHeadlines: true,
@@ -149,7 +149,7 @@ const config = {
   hideEmojis: true,
   hideMedia: true,
   _appVersion: '4.15.2',
-  _buildDate: '2025-11-21',
+  _buildDate: '2025-11-27',
 
 }
 //#endregion
