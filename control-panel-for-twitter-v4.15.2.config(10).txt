@@ -56,7 +56,7 @@
   "mutedQuotes": [],
   "quoteTweets": "separate",
   "redirectChatNav": false,
-  "redirectToTwitter": false,
+  "redirectToTwitter": true,
   "reducedInteractionMode": false,
   "replaceLogo": false,
   "restoreLinkHeadlines": true,
