@@ -48,7 +48,6 @@ const config = {
   debugLogTimelineStats: false,
   version: 'desktop',
   addAddMutedWordMenuItem: true,
-  addFocusedTweetAccountLocation: false,
   alwaysUseLatestTweets: true,
   bypassAgeVerification: true,
   defaultToLatestSearch: false,
@@ -79,7 +78,6 @@ const config = {
   hideMonetizationNav: true,
   hideMoreTweets: true,
   hideNotificationLikes: true,
-  hideNotificationRetweets: false,
   hideNotifications: 'badges',
   hideProfileRetweets: false,
   hideQuoteTweetMetrics: true,
@@ -148,8 +146,8 @@ const config = {
   hideAvatars: true,
   hideEmojis: true,
   hideMedia: true,
-  _appVersion: '4.15.2',
-  _buildDate: '2025-11-27',
+  _appVersion: '4.16.0',
+  _buildDate: '2025-12-08',
 
 }
 //#endregion
